@@ -2,6 +2,9 @@ spring:
   h2:
     console:
       enabled: true
-
+name: prod-YAML
+environment: production
+enabled: true
 server:
     port: 8080 
+secret: secret

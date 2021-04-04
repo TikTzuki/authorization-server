@@ -5,17 +5,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import authorizationserver.config.YAMLConfig;
+import authorizationserver.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
 public class JwtUtil {
-	// String base64Encoded
-	private String serect = "c2VjcmV0";
+	@Autowired
+	UserRepository userRepository;
+
+	@Autowired
+	YAMLConfig config;
 	
 	public String extractUsername(String token) {
 		return extractClaim(token, Claims::getSubject);
@@ -28,7 +34,7 @@ public class JwtUtil {
 	
 	private Claims extractAllClaims(String token) {
 		return Jwts.parser()
-				.setSigningKey(this.serect)
+				.setSigningKey(config.getBase64UrlSecret())
 				.parseClaimsJws(token).getBody();
 	}
 	
@@ -42,16 +48,18 @@ public class JwtUtil {
 	
 	public String generateToken(String username) {
 		Map<String, Object> claims = new HashMap<>();
+		claims.put("scope", userRepository.findByUserName(username).getScope());
 		return createToken(claims, username);
 	}
 	
 	private String createToken(Map<String, Object> claims, String subject) {
-		
 		return Jwts.builder()
 				.setClaims(claims)
-				.setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+				.setSubject(subject)
+				.setIssuer("Auth Server")
+				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 *10))
-				.signWith(SignatureAlgorithm.HS256, this.serect).compact();
+				.signWith(SignatureAlgorithm.HS256, config.getBase64UrlSecret()).compact();
 	}
 	
 	public Boolean validateToken(String token, UserDetails userDetails) {

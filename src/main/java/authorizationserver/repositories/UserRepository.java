@@ -6,4 +6,5 @@ import authorizationserver.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Integer>{
 	User findByUserName(String username);
+	User findByEmail(String email);
 }

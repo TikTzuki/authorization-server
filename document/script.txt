@@ -1,0 +1,9 @@
+Khởi tạo 8 hash value từ 32bit đầu tiên của phần thập phân của căn bậc hai 8 số nguyên tố đầu tiên 2..19
+Khởi tạo mảng các K từ 32bit đầu tiên của phần thập phân của lập phương 64 số nguyên tố đầu tiên 2..311
+
+Đệm:
+Bắt đầu với bản rõ có độ dài L bits.
+Thêm a một bit 1
+Thêm K bit 0, sao cho K là số nhỏ nhất >=0 với L + 1 + K + 64 = bội của 512.
+Thêm L 
+>>> Unsigned right shift: luôn điền 0 vào trước bất kể dấu của con số.
