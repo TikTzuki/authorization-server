@@ -15,12 +15,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import authorizationserver.config.YAMLConfig;
 import authorizationserver.entity.RegistingRequest;
 import authorizationserver.entity.User;
 import authorizationserver.repositories.UserRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService{
+	@Autowired
+	private YAMLConfig config;
+	
 	@Autowired
 	private UserRepository repository;
 	
@@ -32,10 +36,13 @@ public class CustomUserDetailsService implements UserDetailsService{
 	}
 	
 	public boolean createUser(RegistingRequest registRequest) {
+		// Kiem tra tinh hop le cua form tao user
 		if(!validateRequest(registRequest))
 			return false;
-	    String createPersonUrl = "http://localhost:5001/createUser";
+		// http://locahost:5001/createUser
+	    String createPersonUrl = config.getResoucesServer()+config.getCreateUserPath();
 
+	    // Tao request createUser goi den resouces server
 	    RestTemplate restTemplate = new RestTemplate();
 	    HttpHeaders headers = new HttpHeaders();
 	    headers.setContentType(MediaType.APPLICATION_JSON);

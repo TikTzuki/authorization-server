@@ -6,5 +6,8 @@ name: prod-YAML
 environment: production
 enabled: true
 server:
-    port: 8080 
+  address: localhost
+  port: 8080 
+resoucesServer: http://localhost:5001
+createUserPath: /api/createUser
 secret: secret

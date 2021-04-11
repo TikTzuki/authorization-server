@@ -46,17 +46,18 @@ public class JwtUtil {
 		return extractExpiration(token).before(new Date());
 	}
 	
-	public String generateToken(String username) {
+	public String generateToken(String username, String audience) {
 		Map<String, Object> claims = new HashMap<>();
 		claims.put("scope", userRepository.findByUserName(username).getScope());
-		return createToken(claims, username);
+		return createToken(claims, username, audience);
 	}
 	
-	private String createToken(Map<String, Object> claims, String subject) {
+	private String createToken(Map<String, Object> claims, String subject, String audience) {
 		return Jwts.builder()
 				.setClaims(claims)
 				.setSubject(subject)
-				.setIssuer("Auth Server")
+				.setIssuer(config.getAddress() +":"+config.getPort())
+				.setAudience(audience)
 				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 *10))
 				.signWith(SignatureAlgorithm.HS256, config.getBase64UrlSecret()).compact();
