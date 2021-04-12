@@ -56,7 +56,7 @@ public class JwtUtil {
 		return Jwts.builder()
 				.setClaims(claims)
 				.setSubject(subject)
-				.setIssuer(config.getAddress() +":"+config.getPort())
+				.setIssuer(config.getAddress())
 				.setAudience(audience)
 				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 *10))

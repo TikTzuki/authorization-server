@@ -14,7 +14,6 @@
 	<name>authorization-server</name>
 	<description>desinged by TikTzuki</description>
 	<properties>
-		<java.version>11</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
