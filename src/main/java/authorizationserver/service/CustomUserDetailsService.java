@@ -40,7 +40,7 @@ public class CustomUserDetailsService implements UserDetailsService{
 		if(!validateRequest(registRequest))
 			return false;
 		// http://locahost:5001/createUser
-	    String createPersonUrl = config.getResoucesServer()+config.getCreateUserPath();
+	    String createPersonUrl = config.getResoucesServer().endsWith("/")?config.getResoucesServer():config.getResoucesServer()+"/"+config.getCreateUserPath();
 
 	    // Tao request createUser goi den resouces server
 	    RestTemplate restTemplate = new RestTemplate();
