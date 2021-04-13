@@ -22,9 +22,9 @@ public class AuthorizationServerApplication {
     @PostConstruct
     public void initUsers() {
         List<User> users = Stream.of(
-				new User(0, "tiktzuki", "P@ssword1", "tranphanthanhlong18@gmail.com", "openid read:user write:user"),
-				new User(1, "huong", "P@ssword1", "huong@gmail.com", "openid read:user"),
-				new User(2, "huyen", "P@ssword1", "huyen@gmail.com", "openid write:user")
+				new User(1, "tiktzuki", "P@ssword1", "tranphanthanhlong18@gmail.com", "openid read:user write:user"),
+				new User(2, "huong", "P@ssword1", "huong@gmail.com", "openid read:user"),
+				new User(3, "huyen", "P@ssword1", "huyen@gmail.com", "openid write:user")
         ).collect(Collectors.toList());
         repository.saveAll(users);
     }
