@@ -4,21 +4,19 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import authorizationserver.entity.Document;
 import authorizationserver.repositories.DocumentRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.security.authentication.AuthenticationManager;
 
@@ -28,10 +26,16 @@ import authorizationserver.entity.User;
 import authorizationserver.repositories.UserRepository;
 import authorizationserver.service.CustomUserDetailsService;
 import authorizationserver.util.JwtUtil;
+import org.springframework.web.bind.annotation.*;
 
-@RestController
+
+@RestControllerAdvice
 @RequestMapping(value = "connect")
 public class AuthenticateController {
+
+    static class Examples {
+        public static final String example = "{\"userName\": \"tiktzuki\", \"password\":\"P@ssword1\" }";
+    }
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -49,7 +53,16 @@ public class AuthenticateController {
     private DocumentRepository documentRepository;
 
     @PostMapping("/authenticate")
-    public ResponseEntity<Object> generateToken(@RequestBody AuthRequest authRequest, @RequestHeader Map<String, String> headers) throws Exception {
+    public ResponseEntity<Object> generateToken(
+            @RequestHeader Map<String, String> headers,
+            @RequestBody(content = @Content(examples = {
+                    @ExampleObject(
+                            name = "Authentication sample",
+                            summary = "Auth example",
+                            value = Examples.example
+                    )
+            })) @org.springframework.web.bind.annotation.RequestBody AuthRequest authRequest
+    ) throws Exception {
         //Kiem tra thong tin user
         try {
             authenticationManager.authenticate(
@@ -67,22 +80,12 @@ public class AuthenticateController {
     }
 
     @GetMapping("/userinfo")
-    public ResponseEntity<User> getUSerInfor(@RequestHeader Map<String, String> headers) {
-        headers.forEach((key, value) -> {
-            Logger.getLogger(getClass().getName()).info(String.format("Header '%s' = %s", key, value));
-        });
-        // Lay ra token tu header
-        String authorizationHeader = headers.get("authorization");
-        String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : null;
-        if (token != null) {
-            String userName = jwtUtil.extractUsername(token);
-            //Tim user trong database bang username
-            User user = userRepository.findByUserName(userName);
-            // Tra ve user lay tu database
-            return new ResponseEntity<User>(user, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
-        }
+    @Operation(security = {@SecurityRequirement(name = "authorization")})
+    public ResponseEntity<User> getUserInfor(@RequestHeader Map<String, String> headers) {
+        jwtUtil.validateToken(headers, userRepository::existsByUserName);
+        String userName = jwtUtil.extractUsername(jwtUtil.getTokenFromHeaders(headers));
+        User user = userRepository.findByUserName(userName);
+        return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
     @PostMapping("/register")
@@ -95,6 +98,11 @@ public class AuthenticateController {
                 public final String refreshToken = "";
             }, HttpStatus.OK);
         return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getUser() {
+        return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
     }
 
     @PostMapping("/documents")
