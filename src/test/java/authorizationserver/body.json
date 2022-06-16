@@ -1,0 +1,39 @@
+{
+  "id": "NHOM_SAN_PHAM",
+  "name": "NHÓM SẢN PHẨM",
+  "data": {
+    "loan_product_info": {
+      "loan_product_category_info": {
+        "product_category_id": "BAT_DONG_SAN",
+        "product_category_code": "A",
+        "product_category_name": "Bất động sản"
+      },
+      "loan_product_type_info": {
+        "product_type_id": "BAT_DONG_SAN",
+        "product_type_code": "A1",
+        "product_type_name": "Sản phẩm thông thường"
+      },
+      "loan_product_detail_info": {
+        "product_detail_id": "BAT_DONG_SAN",
+        "product_detail_code": "A1.01",
+        "product_detail_name": "Mua Nhà/Đất"
+      }
+    },
+    "loan_product_affiliate_partner_info": {
+      "loan_affiliate_partner_info": {
+        "loan_affiliate_partner_id": "B.012.01",
+        "loan_affiliate_partner_code": "B.012.01",
+        "loan_affiliate_partner_name": "DU AN HQC HOC MONG"
+      },
+      "loan_affiliate_partner_product_category_info": {
+        "loan_affiliate_partner_product_category_id": 7,
+        "loan_affiliate_partner_product_category_code": "B.012.01",
+        "loan_affiliate_partner_product_category_name": "Product HOC MONG"
+      }
+    },
+    "loan_document_info": {
+      "collateral_flag": true,
+      "exception_document_flag": false
+    }
+  }
+}
